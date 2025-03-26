@@ -21,6 +21,15 @@ public class Task {
         this.sprint = null;
     }
 
+    public Task(Long id, String title) {
+        this.id = id;
+        this.title = title;
+        this.description = "";
+        this.status = TaskStatus.TODO;
+        this.owner = null;
+    }
+
+
     public void setOwner(User owner) {
         this.owner = owner;
     }

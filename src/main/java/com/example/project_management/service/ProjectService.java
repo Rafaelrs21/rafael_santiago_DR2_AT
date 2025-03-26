@@ -23,9 +23,9 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
-    public Project saveProject(Project project) {
+    public void saveProject(Project project) {
         project.setAsSaved(project.getId());
-        return projectRepository.save(project);
+        projectRepository.save(project);
     }
 
     public void deleteProject(Long id) {

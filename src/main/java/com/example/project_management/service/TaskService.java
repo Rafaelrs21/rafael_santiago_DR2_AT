@@ -4,70 +4,60 @@ import com.example.project_management.entity.Sprint;
 import com.example.project_management.entity.Task;
 import com.example.project_management.entity.User;
 import com.example.project_management.enums.TaskStatus;
-import com.example.project_management.repository.SprintRepository;
-import com.example.project_management.repository.TaskRepository;
-import com.example.project_management.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TaskService {
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
-    private final SprintRepository sprintRepository;
-
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository, SprintRepository sprintRepository) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-        this.sprintRepository = sprintRepository;
-    }
+    private final Map<Long, Task> taskStore = new HashMap<>();
+    private final Map<Long, User> userStore = new HashMap<>();
+    private final Map<Long, Sprint> sprintStore = new HashMap<>();
 
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return new ArrayList<>(taskStore.values());
     }
 
     public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+        return Optional.ofNullable(taskStore.get(id));
     }
 
     public Task saveTask(Task task) {
-        task.setAsSaved(task.getId());
-        return taskRepository.save(task);
+        if (task.getId() == null) {
+            throw new RuntimeException("Task ID cannot be null");
+        }
+        taskStore.put(task.getId(), task);
+        return task;
     }
 
     public Task updateTaskStatus(Long id, TaskStatus status) {
-        return taskRepository.findById(id)
-                .map(task -> {
-                    task.setStatus(status);
-                    return taskRepository.save(task);
-                })
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskStore.get(id);
+        if (task != null) {
+            task.setStatus(status);
+        }
+        return task;
     }
 
     public Task updateTaskOwner(Long taskId, Long ownerId) {
-        return taskRepository.findById(taskId)
-                .map(task -> {
-                    User owner = userRepository.findById(ownerId).orElseThrow(() -> new RuntimeException("User not found"));
-                    task.setOwner(owner);
-                    return taskRepository.save(task);
-                })
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskStore.get(taskId);
+        User owner = userStore.get(ownerId);
+        if (task != null && owner != null) {
+            task.setOwner(owner);
+        }
+        return task;
     }
 
     public Task assignTaskToSprint(Long taskId, Long sprintId) {
-        return taskRepository.findById(taskId)
-                .map(task -> {
-                    Sprint sprint = sprintRepository.findById(sprintId).orElseThrow(() -> new RuntimeException("Sprint not found"));
-                    task.setSprint(sprint);
-                    return taskRepository.save(task);
-                })
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskStore.get(taskId);
+        Sprint sprint = sprintStore.get(sprintId);
+        if (task != null && sprint != null) {
+            task.setSprint(sprint);
+        }
+        return task;
     }
 
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
+        taskStore.remove(id);
     }
 }
 

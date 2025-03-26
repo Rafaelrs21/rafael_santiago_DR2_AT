@@ -2,53 +2,48 @@ package com.example.project_management.service;
 
 import com.example.project_management.entity.User;
 import com.example.project_management.enums.UserPosition;
-import com.example.project_management.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final Map<Long, User> userStore = new HashMap<>();
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return new ArrayList<>(userStore.values());
     }
 
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        return Optional.ofNullable(userStore.get(id));
     }
 
     public User saveUser(User user) {
-        User savedUser = user.setAsSaved(user.getId());
-        return userRepository.save(savedUser);
+        userStore.put(user.getId(), user);
+        return user;
     }
 
     public User updateUserEmail(Long id, String email) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    User updatedUser = user.updateEmail(email);
-                    return userRepository.save(updatedUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userStore.get(id);
+        if (user != null) {
+            User updatedUser = user.updateEmail(email);
+            userStore.put(id, updatedUser);
+            return updatedUser;
+        }
+        throw new RuntimeException("User not found");
     }
 
     public User updateUserPosition(Long id, UserPosition position) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    User updatedUser = user.setPosition(position);
-                    return userRepository.save(updatedUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userStore.get(id);
+        if (user != null) {
+            User updatedUser = user.setPosition(position);
+            userStore.put(id, updatedUser);
+            return updatedUser;
+        }
+        throw new RuntimeException("User not found");
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        userStore.remove(id);
     }
 }
-

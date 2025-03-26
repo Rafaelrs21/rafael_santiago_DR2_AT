@@ -2,6 +2,8 @@ package com.example.project_management.controller;
 
 import com.example.project_management.entity.Project;
 import com.example.project_management.service.ProjectService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,18 +23,22 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public Project getProjectById(@PathVariable Long id) {
-        return projectService.getProjectById(id).orElseThrow(() -> new RuntimeException("Project not found"));
+    public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
+        return projectService.getProjectById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
-        return projectService.saveProject(project);
+    public ResponseEntity<String> createProject(@RequestBody Project project) {
+        projectService.saveProject(project);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Project created successfully");
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProject(@PathVariable Long id) {
+    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
+        return ResponseEntity.ok("Project deleted successfully");
     }
 }
 

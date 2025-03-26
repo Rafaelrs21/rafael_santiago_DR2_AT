@@ -2,7 +2,6 @@ package com.example.project_management.entity;
 
 import com.example.project_management.enums.UserPosition;
 
-
 public class User {
     private final Long id;
     private final String name;
