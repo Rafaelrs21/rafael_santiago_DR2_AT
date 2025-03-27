@@ -10,14 +10,14 @@ public class Task {
     private User owner;
     private Sprint sprint;
 
-    private boolean markedForDelete = false;
+    public Task() {}
 
     public Task(Long id, String title, String description, TaskStatus status, User owner) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
-        this.owner = owner;
+        this.owner = null;
         this.sprint = null;
     }
 
@@ -28,7 +28,6 @@ public class Task {
         this.status = TaskStatus.TODO;
         this.owner = null;
     }
-
 
     public void setOwner(User owner) {
         this.owner = owner;
@@ -62,27 +61,11 @@ public class Task {
         return status;
     }
 
-    public Long getOwnerId() {
-        return owner.getId();
+    public User getOwner() {
+        return owner;
     }
 
-    public String getOwnerEmail() {
-        return owner.getEmail();
-    }
-
-    public long getSpringId() {
-        return sprint.getId();
-    }
-
-    public boolean hasSprint() {
-        return sprint != null;
-    }
-
-    public void markToDelete() {
-        markedForDelete = true;
-    }
-
-    public boolean isMarkedForDelete() {
-        return markedForDelete;
+    public Sprint getSprint() {
+        return sprint;
     }
 }

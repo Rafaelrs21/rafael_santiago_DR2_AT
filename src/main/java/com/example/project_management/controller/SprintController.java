@@ -30,9 +30,9 @@ public class SprintController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createSprint(@RequestBody Sprint sprint) {
-        sprintService.saveSprint(sprint);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Sprint created successfully");
+    public ResponseEntity<Sprint> createSprint() {
+        Sprint sprint = sprintService.createSprint();
+        return ResponseEntity.status(HttpStatus.CREATED).body(sprint);
     }
 
     @PutMapping("/{id}/project")

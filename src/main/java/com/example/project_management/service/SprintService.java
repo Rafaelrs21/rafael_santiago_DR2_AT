@@ -28,8 +28,10 @@ public class SprintService {
         return sprintRepository.findById(id);
     }
 
-    public void saveSprint(Sprint sprint) {
+    public Sprint createSprint() {
+        Sprint sprint = new Sprint();
         sprintRepository.save(sprint);
+        return sprint;
     }
 
     public void deleteSprint(Long id) {
@@ -37,15 +39,20 @@ public class SprintService {
     }
 
     public Sprint assignProjectToSprint(Long sprintId, Long projectId) {
-        Sprint sprint = sprintRepository.findById(sprintId).orElseThrow(() -> new RuntimeException("Sprint not found"));
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+        Sprint sprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new RuntimeException("Sprint not found"));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
         sprint.setProject(project);
         sprintRepository.save(sprint);
         return sprint;
     }
 
     public Sprint addTaskToSprint(Long sprintId, Long taskId) {
-        Sprint sprint = sprintRepository.findById(sprintId).orElseThrow(() -> new RuntimeException("Sprint not found"));
+        Sprint sprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new RuntimeException("Sprint not found"));
+
         Task task = new Task(taskId, "Task " + taskId);
         sprint.addTask(task);
         sprintRepository.save(sprint);

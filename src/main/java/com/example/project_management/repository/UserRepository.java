@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-class UserRepository {
+public class UserRepository {
     private final Map<Long, User> userStore = new HashMap<>();
 
     public List<User> findAll() {
@@ -17,8 +17,12 @@ class UserRepository {
         return Optional.ofNullable(userStore.get(id));
     }
 
-    public void save(User user) {
+    public User save(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("User ID must be provided.");
+        }
         userStore.put(user.getId(), user);
+        return user;
     }
 
     public void deleteById(Long id) {

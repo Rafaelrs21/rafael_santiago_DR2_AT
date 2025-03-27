@@ -36,11 +36,13 @@ public class TaskController {
         return taskService.updateTaskStatus(id, status);
     }
 
+
     @PutMapping("/{id}/owner")
     public Task updateTaskOwner(@PathVariable Long id, @RequestParam Long ownerId) {
         return taskService.updateTaskOwner(id, ownerId);
     }
 
+    // Atribuindo a sprint à tarefa
     @PutMapping("/{id}/sprint")
     public Task assignTaskToSprint(@PathVariable Long id, @RequestParam Long sprintId) {
         return taskService.assignTaskToSprint(id, sprintId);

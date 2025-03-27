@@ -6,32 +6,20 @@ import java.util.List;
 import java.util.Objects;
 
 public class Sprint {
+    private static long sprintCounter = 1;
+
     private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
     private Project project;
     private List<Task> tasks;
-
     private boolean markedForDelete = false;
 
-    public Sprint(Long id, LocalDate startDate, LocalDate endDate) {
-        this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.project = null;
+    public Sprint() {
+        this.id = sprintCounter++;
+        this.startDate = LocalDate.now();
+        this.endDate = startDate.plusWeeks(2);
         this.tasks = new ArrayList<>();
-    }
-
-    public Sprint(long id, LocalDate startDate, LocalDate endDate, List<Task> tasks) {
-        this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.project = null;
-        this.tasks = tasks;
-    }
-
-    public void setAsSaved(long id) {
-        this.id = id;
     }
 
     public void setProject(Project project) {
@@ -56,7 +44,7 @@ public class Sprint {
     }
 
     public long getProjectId() {
-        return project.getId();
+        return project != null ? project.getId() : 0;
     }
 
     public boolean hasProject() {
@@ -76,14 +64,6 @@ public class Sprint {
     }
 
     public void removeTaskById(Long id) {
-        boolean found = false;
-
-        for (Task task : tasks) {
-            if (Objects.equals(task.getId(), id)) {
-                task.markToDelete();
-                found = true;
-                break;
-            }
-        }
+        tasks.removeIf(task -> Objects.equals(task.getId(), id));
     }
 }

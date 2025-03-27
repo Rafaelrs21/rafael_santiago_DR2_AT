@@ -41,4 +41,3 @@ public class ProjectController {
         return ResponseEntity.ok("Project deleted successfully");
     }
 }
-

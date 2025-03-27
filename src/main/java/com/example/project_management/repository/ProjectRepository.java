@@ -21,7 +21,7 @@ public class ProjectRepository {
     }
 
     public void save(Project project) {
-        projects.removeIf(p -> p.getId().equals(project.getId())); // Remove se já existir
+        projects.removeIf(p -> p.getId().equals(project.getId()));
         projects.add(project);
     }
 
